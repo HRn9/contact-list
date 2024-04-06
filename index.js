@@ -4,6 +4,25 @@ const isLsEmpty = !localStorage.contacts;
 
 const contactListEl = document.querySelector('.contact-list');
 
+function createItemKeyFromProps(itemProps) {
+  return itemProps.join('_')
+}
+
+function deleteItem(itemKey) {
+  const contacts = JSON.parse(localStorage.getItem('contacts'));
+  const [name, vacancy, phone] = itemKey.split('_');
+  const firstChar = name.charAt(0).toLowerCase()
+  const contactList = contacts[firstChar];
+
+  const filteredList = contactList.filter((contact) => 
+    contact.name !== name || contact.vacancy !== vacancy || contact.phone !== phone
+  );
+
+  filteredList.length < 1 ? delete contacts[firstChar] : contacts[firstChar] = filteredList;
+
+  localStorage.setItem('contacts', JSON.stringify(contacts));
+}
+
 function renderEmptyList() {
   contactListEl.innerHTML = "";
 
@@ -54,6 +73,12 @@ function renderList() {
     value.forEach((item) => {
       const listItem = document.createElement('div');
       listItem.classList.add('list-item');
+      listItem.dataset.key = createItemKeyFromProps(Object.values(item));
+
+      const deleteBtn = document.createElement('span');
+      deleteBtn.classList.add('delete-btn');
+      deleteBtn.textContent = '🗙';
+      listItem.appendChild(deleteBtn)
 
       const nameEl = document.createElement('span');
       nameEl.textContent = `name: ${item.name}`;
@@ -71,6 +96,24 @@ function renderList() {
     })
   })
 }
+
+const isElementEmpty = (element) => {
+  return element.children.length === 0;
+}
+
+contactListEl.addEventListener('click', (e) => {
+  const target = e.target;
+  if (target.classList.contains('delete-btn')) {
+    const itemCard = target.parentElement
+    const itemList = itemCard.parentElement
+    const itemBlock = itemList.parentElement
+
+    deleteItem(itemCard.dataset.key)
+
+    itemCard.remove()
+    if (isElementEmpty(itemList)) itemBlock.remove();
+  }
+})
 
 isLsEmpty ? renderEmptyList() : renderList();
 

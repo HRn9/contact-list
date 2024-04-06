@@ -95,6 +95,16 @@ button:hover {
   padding: 0.6em;
   border: 1px solid transparent;
   border-radius: 6%;
+  position: relative;
+}
+
+.delete-btn {
+  position: absolute;
+  right: 8px;
+  top: 4px;
+  cursor: pointer;
+  user-select: none;
+  background-color: #e7e7e7;
 }
 
 .block-title {
