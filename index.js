@@ -1,6 +1,5 @@
-const [ addBtn, cleanBtn, searchBtn ] = document.querySelectorAll('button')
+const controlsWrapper = document.querySelector('.controls__wrapper')
 const [ nameInput, vacancyInput, phoneNumInput ] = document.querySelectorAll('input')
-const isLsEmpty = !localStorage.contacts;
 
 const contactListEl = document.querySelector('.contact-list');
 
@@ -21,6 +20,8 @@ function deleteItem(itemKey) {
   filteredList.length < 1 ? delete contacts[firstChar] : contacts[firstChar] = filteredList;
 
   localStorage.setItem('contacts', JSON.stringify(contacts));
+
+  renderList()
 }
 
 function renderEmptyList() {
@@ -34,9 +35,14 @@ function renderEmptyList() {
 }
 
 function renderList() {
+  contactListEl.innerHTML = "";
   const list = JSON.parse(localStorage.getItem('contacts'))
 
-  contactListEl.innerHTML = "";
+  const isLsEmpty = !list || Object.keys(list).length === 0;
+  if (isLsEmpty) {
+    renderEmptyList()
+    return
+  }
 
   Object.entries(list).forEach((ent) => {
     const [key, value] = ent;
@@ -115,8 +121,6 @@ contactListEl.addEventListener('click', (e) => {
   }
 })
 
-isLsEmpty ? renderEmptyList() : renderList();
-
 function clearInputs() {
   nameInput.value = "";
   vacancyInput.value = "";
@@ -146,4 +150,16 @@ function addContact() {
   renderList()
 }
 
-addBtn.addEventListener('click', addContact)
+function clearList() {
+  localStorage.removeItem('contacts');
+  renderList();
+}
+
+renderList()
+
+controlsWrapper.addEventListener('click', (e) => {
+  const target = e.target;
+
+  if(target.classList.contains('add-btn')) addContact();
+  if(target.classList.contains('clear-btn')) clearList();
+})
