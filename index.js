@@ -51,7 +51,7 @@ function renderList() {
     listBlock.classList.add('list-block');
 
     const blockTitle = document.createElement('span');
-    blockTitle.textContent = key.toUpperCase();
+    blockTitle.textContent = `${key.toUpperCase()} (${value.length})`;
     blockTitle.classList.add('block-title')
 
     const blockBtn = document.createElement('span');
@@ -107,20 +107,6 @@ const isElementEmpty = (element) => {
   return element.children.length === 0;
 }
 
-contactListEl.addEventListener('click', (e) => {
-  const target = e.target;
-  if (target.classList.contains('delete-btn')) {
-    const itemCard = target.parentElement
-    const itemList = itemCard.parentElement
-    const itemBlock = itemList.parentElement
-
-    deleteItem(itemCard.dataset.key)
-
-    itemCard.remove()
-    if (isElementEmpty(itemList)) itemBlock.remove();
-  }
-})
-
 function clearInputs() {
   nameInput.value = "";
   vacancyInput.value = "";
@@ -163,3 +149,18 @@ controlsWrapper.addEventListener('click', (e) => {
   if(target.classList.contains('add-btn')) addContact();
   if(target.classList.contains('clear-btn')) clearList();
 })
+
+contactListEl.addEventListener('click', (e) => {
+  const target = e.target;
+  if (target.classList.contains('delete-btn')) {
+    const itemCard = target.parentElement
+    const itemList = itemCard.parentElement
+    const itemBlock = itemList.parentElement
+
+    deleteItem(itemCard.dataset.key)
+
+    itemCard.remove()
+    if (isElementEmpty(itemList)) itemBlock.remove();
+  }
+})
+
