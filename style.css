@@ -41,6 +41,16 @@ button:hover {
   gap: 15px;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
+  margin: 0 auto;
+}
+
+.inputs__wrapper,
+.buttons__wrapper {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .contact-list__wrapper {
@@ -55,6 +65,7 @@ button:hover {
   display: flex;
   flex-direction: column;
   gap: 1em;
+  width: 60vw;
 }
 
 .empty-message {
@@ -85,6 +96,7 @@ button:hover {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 0.9em;
+  padding-top: 1em;
 }
 
 .list-item {
@@ -96,6 +108,7 @@ button:hover {
   border: 1px solid transparent;
   border-radius: 6%;
   position: relative;
+  flex-wrap: wrap;
 }
 
 .delete-btn {
@@ -115,4 +128,5 @@ button:hover {
 .hidden {
   height: 0;
   overflow: hidden;
+  padding: 0;
 }
