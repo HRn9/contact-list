@@ -1,7 +1,15 @@
 const controlsWrapper = document.querySelector('.controls__wrapper')
-const [ nameInput, vacancyInput, phoneNumInput ] = document.querySelectorAll('input')
+const [ nameInput, vacancyInput, phoneNumInput ] = document.querySelectorAll('.controls__input')
 
 const contactListEl = document.querySelector('.contact-list');
+
+function validateValue(value, validationObj) {
+  const trimmedValue = value?.trim() || '';
+
+  if (validationObj.required && trimmedValue === '') return 'This field cannot be left blank.';
+
+  return trimmedValue.match(validationObj.regexp) ? null : validationObj.error
+}
 
 function createItemKeyFromProps(itemProps) {
   return itemProps.join('_')
