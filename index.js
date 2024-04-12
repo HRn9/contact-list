@@ -3,12 +3,48 @@ const [ nameInput, vacancyInput, phoneNumInput ] = document.querySelectorAll('.c
 
 const contactListEl = document.querySelector('.contact-list');
 
+const validationRules = {
+  name: {
+    required: true, 
+    regexp: /^[a-zA-Z]{3,}$/,  
+    error: 'The name must be at least 3 letters long'
+  },
+  vacancy: {
+    required: true, 
+    regexp: /^[a-zA-Z]{3,}$/,  
+    error: 'The vacancy must be at least 3 letters long'
+  },
+  phone: {
+    required: true,
+    regexp: /^(\+?)[78]\d{10}$/,
+    error: 'The number must folow RU region format'
+  }
+}
+
 function validateValue(value, validationObj) {
   const trimmedValue = value?.trim() || '';
 
   if (validationObj.required && trimmedValue === '') return 'This field cannot be left blank.';
 
   return trimmedValue.match(validationObj.regexp) ? null : validationObj.error
+}
+
+function showError({ invalidInput, errorMessage }) {
+  const inputContainer = invalidInput.parentElement;
+
+  const errorEl = document.createElement('span')
+  errorEl.classList.add('error-message')
+  errorEl.textContent = errorMessage;
+  errorEl.style.width = `${invalidInput.offsetWidth}px`;
+
+  invalidInput.classList.add('shake');
+  inputContainer.appendChild(errorEl)
+
+  setTimeout(() => {
+    invalidInput.classList.remove('shake');
+    errorEl.remove()
+  }, 600);
+    
 }
 
 function createItemKeyFromProps(itemProps) {
@@ -115,13 +151,13 @@ const isElementEmpty = (element) => {
   return element.children.length === 0;
 }
 
-function clearInputs() {
+function clearInputs() { // refactor to independent inputs 
   nameInput.value = "";
   vacancyInput.value = "";
   phoneNumInput.value = "";
 }
 
-function addContact() {
+function addContact() { // refactor to independent inputs 
   const contactItem = {
     name: nameInput.value,
     vacancy: vacancyInput.value,
@@ -149,12 +185,24 @@ function clearList() {
   renderList();
 }
 
+function handleContact(targetInputs) {
+  const validationErrors = [];
+
+  targetInputs.forEach((inp) => {
+    const validationRes = validateValue(inp.value, validationRules[inp.dataset.content])
+
+    validationRes && validationErrors.push({ invalidInput: inp, errorMessage: validationRes})
+  })
+
+  validationErrors.every((x) => x.errorMessage === null) ? addContact() : validationErrors.map((x) => showError(x))
+}
+
 renderList()
 
 controlsWrapper.addEventListener('click', (e) => {
   const target = e.target;
 
-  if(target.classList.contains('add-btn')) addContact();
+  if(target.classList.contains('add-btn')) handleContact([ nameInput, vacancyInput, phoneNumInput ]);
   if(target.classList.contains('clear-btn')) clearList();
 })
 
@@ -171,4 +219,3 @@ contactListEl.addEventListener('click', (e) => {
     if (isElementEmpty(itemList)) itemBlock.remove();
   }
 })
-

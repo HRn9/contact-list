@@ -12,10 +12,16 @@
     <h1>Contact List on JS</h1>
 
     <div class="controls__wrapper">
-        <div class="inputs__wrapper">
-            <input type="text" placeholder="Name" class="base-el controls__input">
-            <input type="text" placeholder="Vacancy" class="base-el controls__input">
-            <input type="tel" placeholder="Phone number" class="base-el controls__input">
+        <div class="inputs-group__wrapper">
+            <div class="input__wrapper">
+                <input type="text" placeholder="Name" class="base-el controls__input" data-content="name">
+            </div>
+            <div class="input__wrapper">
+                <input type="text" placeholder="Vacancy" class="base-el controls__input" data-content="vacancy">
+            </div>
+            <div class="input__wrapper">
+                <input type="tel" placeholder="Phone number" class="base-el controls__input" data-content="phone">
+            </div>
         </div>
 
         <div class="buttons__wrapper">
@@ -28,6 +34,8 @@
     <div class="contact-list__wrapper">
         <div class="contact-list base-el"></div>
     </div>
+
+    <div class="editor-modal"></div>
 
     <script src="index.js"></script>
 </body>

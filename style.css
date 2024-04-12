@@ -45,12 +45,18 @@ button:hover {
   margin: 0 auto;
 }
 
-.inputs__wrapper,
+.inputs-group__wrapper,
 .buttons__wrapper {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+.input__wrapper {
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
 
 .contact-list__wrapper {
@@ -129,4 +135,26 @@ button:hover {
   height: 0;
   overflow: hidden;
   padding: 0;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+.shake {
+  animation: shake 0.5s ease-in-out;
+  border-color: rgb(96, 20, 20);
+}
+
+.error-message {
+  color: #e51b1b;
+  text-align: center;
+  text-wrap: balance;
+  font-size: 0.8em;
+  position: absolute;
+  bottom: -1.2em;
 }
