@@ -155,22 +155,17 @@ const isElementEmpty = (element) => {
   return element.children.length === 0;
 }
 
-function clearInputs() { // refactor to independent inputs 
-  nameInputMain.value = "";
-  vacancyInputMain.value = "";
-  phoneNumInputMain.value = "";
+function clearInputs(inputs) {
+  inputs.forEach((inp) => inp.value = '')
 }
 
-function addContact() { // refactor to independent inputs 
-  const contactItem = {
-    name: nameInputMain.value,
-    vacancy: vacancyInputMain.value,
-    phone: phoneNumInputMain.value
-  }
+function addContact(inputs) {
+  const contactItem = {}
+  inputs.map((inp) => contactItem[inp.dataset.content] = inp.value)
 
   const firstChar = nameInputMain.value.charAt(0).toLowerCase()
 
-  clearInputs()
+  clearInputs(inputs)
 
   let contacts = JSON.parse(localStorage.getItem('contacts')) || {};
 
@@ -186,7 +181,7 @@ function addContact() { // refactor to independent inputs
 
 function clearList() {
   localStorage.removeItem('contacts');
-  renderList();
+  renderEmptyList()
 }
 
 function handleContact(targetInputs) {
@@ -198,7 +193,7 @@ function handleContact(targetInputs) {
     validationRes && validationErrors.push({ invalidInput: inp, errorMessage: validationRes})
   })
 
-  validationErrors.every((x) => x.errorMessage === null) ? addContact() : validationErrors.map((x) => showError(x))
+  validationErrors.every((x) => x.errorMessage === null) ? addContact(targetInputs) : validationErrors.map((x) => showError(x))
 }
 
 renderList()
