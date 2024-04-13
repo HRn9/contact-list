@@ -55,7 +55,7 @@ function decodeItemKey(itemKey) {
   return itemKey.split('itemSpace').map((x) => x.replace('whitespace', ' '))
 }
 
-function deleteItem(itemKey) {
+function deleteItem(itemKey, itemElement) {
   const contacts = JSON.parse(localStorage.getItem('contacts'));
   const [name, vacancy, phone] = decodeItemKey(itemKey)
   const firstChar = name.charAt(0).toLowerCase()
@@ -69,7 +69,7 @@ function deleteItem(itemKey) {
 
   localStorage.setItem('contacts', JSON.stringify(contacts));
 
-  renderList()
+  itemElement && itemElement.remove()
 }
 
 function renderEmptyList() {
@@ -214,12 +214,12 @@ contactListEl.addEventListener('click', (e) => {
   const target = e.target;
   if (target.classList.contains('delete-btn')) {
     const itemCard = target.parentElement
-    const itemList = itemCard.parentElement
-    const itemBlock = itemList.parentElement
+    const itemCardsList = itemCard.parentElement
+    const itemBlock = itemCardsList.parentElement
 
-    deleteItem(itemCard.dataset.key)
+    deleteItem(itemCard.dataset.key, itemCard)
 
-    itemCard.remove()
-    if (isElementEmpty(itemList)) itemBlock.remove();
+    isElementEmpty(itemCardsList) && itemBlock.remove();
+    isElementEmpty(contactListEl) && renderEmptyList();
   }
 })
