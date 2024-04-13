@@ -1,17 +1,17 @@
 const controlsWrapper = document.querySelector('.controls__wrapper')
-const [ nameInput, vacancyInput, phoneNumInput ] = document.querySelectorAll('.controls__input')
+const [ nameInputMain, vacancyInputMain, phoneNumInputMain ] = document.querySelectorAll('.controls__input')
 
 const contactListEl = document.querySelector('.contact-list');
 
 const validationRules = {
   name: {
     required: true, 
-    regexp: /^[a-zA-Z]{3,}$/,  
+    regexp: /^[a-zA-Z]{3}.*$/,  
     error: 'The name must be at least 3 letters long'
   },
   vacancy: {
     required: true, 
-    regexp: /^[a-zA-Z]{3,}$/,  
+    regexp: /^[a-zA-Z]{3}.*$/,  
     error: 'The vacancy must be at least 3 letters long'
   },
   phone: {
@@ -152,19 +152,19 @@ const isElementEmpty = (element) => {
 }
 
 function clearInputs() { // refactor to independent inputs 
-  nameInput.value = "";
-  vacancyInput.value = "";
-  phoneNumInput.value = "";
+  nameInputMain.value = "";
+  vacancyInputMain.value = "";
+  phoneNumInputMain.value = "";
 }
 
 function addContact() { // refactor to independent inputs 
   const contactItem = {
-    name: nameInput.value,
-    vacancy: vacancyInput.value,
-    phone: phoneNumInput.value
+    name: nameInputMain.value,
+    vacancy: vacancyInputMain.value,
+    phone: phoneNumInputMain.value
   }
 
-  const firstChar = nameInput.value.charAt(0).toLowerCase()
+  const firstChar = nameInputMain.value.charAt(0).toLowerCase()
 
   clearInputs()
 
@@ -202,7 +202,7 @@ renderList()
 controlsWrapper.addEventListener('click', (e) => {
   const target = e.target;
 
-  if(target.classList.contains('add-btn')) handleContact([ nameInput, vacancyInput, phoneNumInput ]);
+  if(target.classList.contains('add-btn')) handleContact([ nameInputMain, vacancyInputMain, phoneNumInputMain ]);
   if(target.classList.contains('clear-btn')) clearList();
 })
 
