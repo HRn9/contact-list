@@ -48,12 +48,16 @@ function showError({ invalidInput, errorMessage }) {
 }
 
 function createItemKeyFromProps(itemProps) {
-  return itemProps.join('_')
+  return itemProps.map((item) => item.replace(' ', 'whitespace')).join('itemSpace');
+}
+
+function decodeItemKey(itemKey) {
+  return itemKey.split('itemSpace').map((x) => x.replace('whitespace', ' '))
 }
 
 function deleteItem(itemKey) {
   const contacts = JSON.parse(localStorage.getItem('contacts'));
-  const [name, vacancy, phone] = itemKey.split('_');
+  const [name, vacancy, phone] = decodeItemKey(itemKey)
   const firstChar = name.charAt(0).toLowerCase()
   const contactList = contacts[firstChar];
 
