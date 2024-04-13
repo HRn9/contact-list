@@ -69,7 +69,15 @@ function deleteItem(itemKey, itemElement) {
 
   localStorage.setItem('contacts', JSON.stringify(contacts));
 
-  itemElement && itemElement.remove()
+  if (itemElement) {
+    const itemCardsList = itemElement.parentElement
+    const itemBlock = itemCardsList.parentElement
+
+    itemElement.remove()
+
+    isElementEmpty(itemCardsList) && itemBlock.remove();
+    isElementEmpty(contactListEl) && renderEmptyList();
+  }
 }
 
 function renderEmptyList() {
@@ -207,14 +215,10 @@ controlsWrapper.addEventListener('click', (e) => {
 
 contactListEl.addEventListener('click', (e) => {
   const target = e.target;
+
   if (target.classList.contains('delete-btn')) {
     const itemCard = target.parentElement
-    const itemCardsList = itemCard.parentElement
-    const itemBlock = itemCardsList.parentElement
 
     deleteItem(itemCard.dataset.key, itemCard)
-
-    isElementEmpty(itemCardsList) && itemBlock.remove();
-    isElementEmpty(contactListEl) && renderEmptyList();
   }
 })
