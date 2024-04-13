@@ -73,6 +73,8 @@ function deleteItem(itemKey, itemElement) {
     const itemCardsList = itemElement.parentElement
     const itemBlock = itemCardsList.parentElement
 
+    decreaseTitleCounter(itemBlock.querySelector('.block-title'))
+
     itemElement.remove()
 
     isElementEmpty(itemCardsList) && itemBlock.remove();
@@ -202,6 +204,12 @@ function handleContact(targetInputs) {
   })
 
   validationErrors.every((x) => x.errorMessage === null) ? addContact(targetInputs) : validationErrors.map((x) => showError(x))
+}
+
+function decreaseTitleCounter(titleEl) {
+  const counter = titleEl.textContent.match(/\d/);
+
+  titleEl.textContent = titleEl.textContent.replace(/\d/, counter - 1)
 }
 
 renderList()
