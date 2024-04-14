@@ -343,30 +343,25 @@ searchInput.addEventListener('input', (event) => {
 
 document.body.addEventListener('click', (e) => {
   const target = e.target;
+  const actions = {
+    'add-btn': () => handleContact([ nameInputMain, vacancyInputMain, phoneNumInputMain ], target),
+    'clear-btn': () => clearList(),
+    'delete-btn': () => deleteItem(target.parentElement.dataset.key, target.parentElement),
+    'edit-btn': () => showEditModal(target.parentElement.dataset.key),
+    'close-editor': () => closeEditModal(),
+    'editor-modal__wrapper': () => closeEditModal(),
+    'save-btn': () => handleContactFromEditModal(target),
+    'search-btn': () => showSearchModal(),
+    'close-search': () => closeSearchModal(),
+    'search-modal__wrapper': () => closeSearchModal(),
+    'show-all-btn': () => renderSearchList('', true)
+  };
 
-  if(target.classList.contains('add-btn')) handleContact([ nameInputMain, vacancyInputMain, phoneNumInputMain ], target);
-  if(target.classList.contains('clear-btn')) clearList();
-
-  if (target.classList.contains('delete-btn')) {
-    deleteItem(target.parentElement.dataset.key, target.parentElement)
-  }
-
-  if (target.classList.contains('edit-btn')) {
-    showEditModal(target.parentElement.dataset.key);
-  }
-  if (target.classList.contains('close-editor') || target.classList.contains('editor-modal__wrapper')) {
-    closeEditModal()
-  }
-  if (target.classList.contains('save-btn')) {
-    handleContactFromEditModal(target)
-  }
-  if (target.classList.contains('search-btn')) {
-    showSearchModal()
-  }
-  if (target.classList.contains('close-search') || target.classList.contains('search-modal__wrapper')) {
-    closeSearchModal()
-  }
-  if (target.classList.contains('show-all-btn')) {
-    renderSearchList('', true)
-  }
-})
+  Object.keys(actions).some(className => {
+    if (target.classList.contains(className)) {
+      actions[className]();
+      return true;
+    }
+    return false;
+  });
+});
