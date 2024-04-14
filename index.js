@@ -31,23 +31,25 @@ function validateValue(value, validationObj) {
   return trimmedValue.match(validationObj.regexp) ? null : validationObj.error
 }
 
-function showInputsError({ invalidInput, errorMessage }) {
-  const inputContainer = invalidInput.parentElement;
+function showElementsError(invalidElement, errorMessage) {
+  const parentElement = invalidElement.parentElement;
+
+  const tagName = invalidElement.tagName.toLowerCase()
 
   const errorEl = document.createElement('span')
   errorEl.classList.add('error-message')
-  errorEl.classList.add('input-message')
+  errorEl.classList.add(`${tagName}-message`)
   errorEl.textContent = errorMessage;
-  errorEl.style.width = `${invalidInput.offsetWidth}px`;
 
-  invalidInput.classList.add('shake');
-  inputContainer.appendChild(errorEl)
+  if (tagName === 'input') errorEl.style.width = `${invalidElement.offsetWidth}px`;
+
+  invalidElement.classList.add('shake');
+  parentElement.appendChild(errorEl)
 
   setTimeout(() => {
-    invalidInput.classList.remove('shake');
+    invalidElement.classList.remove('shake');
     errorEl.remove()
   }, 600);
-    
 }
 
 function createItemKeyFromProps(itemProps) {
@@ -232,7 +234,7 @@ function handleContact(targetInputs, submitEl) {
     addContact(targetInputs);
     handleStatus = true;
   } else {
-    validationErrors.map((x) => showInputsError(x))
+    validationErrors.map((x) => showElementsError(x.invalidInput, x.errorMessage))
     handleStatus = false;
   }
 
@@ -281,23 +283,6 @@ function closeEditModal() {
   clearInputs(editsInputGroup)
   editModal.dataset.initialKey = ''
   allowScroll()
-}
-
-function showElementsError(element, errorMessage) {
-  const parentElement = element.parentElement;
-
-  const errorEl = document.createElement('span')
-  errorEl.classList.add('error-message')
-  errorEl.classList.add('button-message')
-  errorEl.textContent = errorMessage;
-
-  element.classList.add('shake');
-  parentElement.appendChild(errorEl)
-
-  setTimeout(() => {
-    element.classList.remove('shake');
-    errorEl.remove()
-  }, 600);
 }
 
 function handleContactFromEditModal(editBtn) {
