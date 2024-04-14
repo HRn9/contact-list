@@ -5,6 +5,10 @@ const editsInputGroup = document.querySelectorAll('.editors__input')
 const contactListEl = document.querySelector('.contact-list');
 const editModal = document.querySelector('.editor-modal');
 
+const searchModal = document.querySelector('.search-modal');
+const searchListEl = document.querySelector('.search-list');
+const searchInput = document.querySelector('.search-inp');
+
 const validationRules = {
   name: {
     required: true, 
@@ -100,6 +104,36 @@ function renderEmptyList() {
   contactListEl.appendChild(emptyMessage)
 }
 
+function renderContactCard(contactItem, container) {
+  const listItem = document.createElement('div');
+  listItem.classList.add('list-item');
+  listItem.dataset.key = createItemKeyFromProps(Object.values(contactItem));
+
+  const nameEl = document.createElement('span');
+  nameEl.textContent = `name: ${contactItem.name}`;
+  listItem.appendChild(nameEl)
+
+  const vacancyEl = document.createElement('span');
+  vacancyEl.textContent = `vacancy: ${contactItem.vacancy}`;
+  listItem.appendChild(vacancyEl)
+
+  const phoneEl = document.createElement('span');
+  phoneEl.textContent = `phone number: ${contactItem.phone}`;
+  listItem.appendChild(phoneEl)
+
+  const deleteBtn = document.createElement('span');
+  deleteBtn.classList.add('delete-btn');
+  deleteBtn.textContent = '🗙';
+  listItem.appendChild(deleteBtn)
+
+  const editBtn = document.createElement('span');
+  editBtn.classList.add('edit-btn');
+  editBtn.textContent = '✎';
+  listItem.appendChild(editBtn)
+
+  container.appendChild(listItem)
+}
+
 function renderList() {
   contactListEl.innerHTML = "";
   const list = JSON.parse(localStorage.getItem('contacts'))
@@ -143,33 +177,7 @@ function renderList() {
     contactListEl.appendChild(listBlock)
 
     value.forEach((item) => {
-      const listItem = document.createElement('div');
-      listItem.classList.add('list-item');
-      listItem.dataset.key = createItemKeyFromProps(Object.values(item));
-
-      const nameEl = document.createElement('span');
-      nameEl.textContent = `name: ${item.name}`;
-      listItem.appendChild(nameEl)
-
-      const vacancyEl = document.createElement('span');
-      vacancyEl.textContent = `vacancy: ${item.vacancy}`;
-      listItem.appendChild(vacancyEl)
-
-      const phoneEl = document.createElement('span');
-      phoneEl.textContent = `phone number: ${item.phone}`;
-      listItem.appendChild(phoneEl)
-
-      const deleteBtn = document.createElement('span');
-      deleteBtn.classList.add('delete-btn');
-      deleteBtn.textContent = '🗙';
-      listItem.appendChild(deleteBtn)
-
-      const editBtn = document.createElement('span');
-      editBtn.classList.add('edit-btn');
-      editBtn.textContent = '✎';
-      listItem.appendChild(editBtn)
-
-      blockBody.appendChild(listItem)
+      renderContactCard(item, blockBody)
     })
   })
 }
@@ -303,7 +311,35 @@ function handleContactFromEditModal(editBtn) {
     }
 }
 
+function showSearchModal() {
+  searchModal.parentElement.classList.remove('hidden')
+  disableScroll()
+  searchInput.value = '';
+}
+
+function closeSearchModal() {
+  searchModal.parentElement.classList.add('hidden');
+  searchListEl.innerHTML = '';
+  allowScroll()
+}
+
+function renderSearchList(value, allFlag = false) {
+  const trimmedValue = value.trim() || null
+  const contactList = getContactListItems()
+  const filtredList = allFlag ?
+  contactList :
+  contactList.filter((x) => Object.values(x).some((y) => y.toLowerCase().includes(trimmedValue)));
+
+  searchListEl.innerHTML = '';
+
+  filtredList.forEach((item) => renderContactCard(item, searchListEl))
+}
+
 renderList()
+
+searchInput.addEventListener('input', (event) => {
+  renderSearchList(event.target.value.toLowerCase())
+})
 
 document.body.addEventListener('click', (e) => {
   const target = e.target;
@@ -318,10 +354,19 @@ document.body.addEventListener('click', (e) => {
   if (target.classList.contains('edit-btn')) {
     showEditModal(target.parentElement.dataset.key);
   }
-  if (target.classList.contains('close-modal-btn') || target.classList.contains('editor-modal__wrapper')) {
+  if (target.classList.contains('close-editor') || target.classList.contains('editor-modal__wrapper')) {
     closeEditModal()
   }
   if (target.classList.contains('save-btn')) {
     handleContactFromEditModal(target)
+  }
+  if (target.classList.contains('search-btn')) {
+    showSearchModal()
+  }
+  if (target.classList.contains('close-search') || target.classList.contains('search-modal__wrapper')) {
+    closeSearchModal()
+  }
+  if (target.classList.contains('show-all-btn')) {
+    renderSearchList('', true)
   }
 })

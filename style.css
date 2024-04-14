@@ -47,7 +47,6 @@ button:hover {
   padding-top: 1em;
   display: flex;
   gap: 15px;
-  align-items: center;
   justify-content: center;
   flex-wrap: wrap;
   margin: 0 auto;
@@ -226,4 +225,24 @@ button:hover {
   font-size: 1.2em;
   user-select: none;
   cursor: pointer;
+}
+
+.search-modal {
+  width: 60vw;
+}
+
+.search-inp {
+  width: 100%;
+}
+
+.search-list {
+  height: 30vh;
+  width: 100%;
+  border: 3px dotted #e7e7e7;
+
+  overflow: auto;
+  padding: 1em;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1em;
 }
