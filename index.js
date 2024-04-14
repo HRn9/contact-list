@@ -1,7 +1,9 @@
 const controlsWrapper = document.querySelector('.controls__wrapper')
 const [ nameInputMain, vacancyInputMain, phoneNumInputMain ] = document.querySelectorAll('.controls__input')
+const editsInputGroup = document.querySelectorAll('.editors__input')
 
 const contactListEl = document.querySelector('.contact-list');
+const editModal = document.querySelector('.editor-modal');
 
 const validationRules = {
   name: {
@@ -29,11 +31,12 @@ function validateValue(value, validationObj) {
   return trimmedValue.match(validationObj.regexp) ? null : validationObj.error
 }
 
-function showError({ invalidInput, errorMessage }) {
+function showInputsError({ invalidInput, errorMessage }) {
   const inputContainer = invalidInput.parentElement;
 
   const errorEl = document.createElement('span')
   errorEl.classList.add('error-message')
+  errorEl.classList.add('input-message')
   errorEl.textContent = errorMessage;
   errorEl.style.width = `${invalidInput.offsetWidth}px`;
 
@@ -52,17 +55,20 @@ function createItemKeyFromProps(itemProps) {
 }
 
 function decodeItemKey(itemKey) {
-  return itemKey.split('itemSpace').map((x) => x.replace('whitespace', ' '))
+  const [name, vacancy, phone] = itemKey.split('itemSpace').map((x) => x.replace('whitespace', ' '));
+  return { name, vacancy, phone };
 }
 
 function deleteItem(itemKey, itemElement) {
   const contacts = JSON.parse(localStorage.getItem('contacts'));
-  const [name, vacancy, phone] = decodeItemKey(itemKey)
-  const firstChar = name.charAt(0).toLowerCase()
+  const contactItem = decodeItemKey(itemKey)
+  const firstChar = contactItem.name.charAt(0).toLowerCase()
   const contactList = contacts[firstChar];
 
   const filteredList = contactList.filter((contact) => 
-    contact.name !== name || contact.vacancy !== vacancy || contact.phone !== phone
+    contact.name !== contactItem.name || 
+    contact.vacancy !== contactItem.vacancy || 
+    contact.phone !== contactItem.phone
   );
 
   filteredList.length < 1 ? delete contacts[firstChar] : contacts[firstChar] = filteredList;
@@ -102,7 +108,7 @@ function renderList() {
     return
   }
 
-  Object.entries(list).forEach((ent) => {
+  Object.entries(list).sort().forEach((ent) => {
     const [key, value] = ent;
 
     const listBlock = document.createElement('div');
@@ -139,11 +145,6 @@ function renderList() {
       listItem.classList.add('list-item');
       listItem.dataset.key = createItemKeyFromProps(Object.values(item));
 
-      const deleteBtn = document.createElement('span');
-      deleteBtn.classList.add('delete-btn');
-      deleteBtn.textContent = '🗙';
-      listItem.appendChild(deleteBtn)
-
       const nameEl = document.createElement('span');
       nameEl.textContent = `name: ${item.name}`;
       listItem.appendChild(nameEl)
@@ -155,6 +156,16 @@ function renderList() {
       const phoneEl = document.createElement('span');
       phoneEl.textContent = `phone number: ${item.phone}`;
       listItem.appendChild(phoneEl)
+
+      const deleteBtn = document.createElement('span');
+      deleteBtn.classList.add('delete-btn');
+      deleteBtn.textContent = '🗙';
+      listItem.appendChild(deleteBtn)
+
+      const editBtn = document.createElement('span');
+      editBtn.classList.add('edit-btn');
+      editBtn.textContent = '✎';
+      listItem.appendChild(editBtn)
 
       blockBody.appendChild(listItem)
     })
@@ -169,11 +180,17 @@ function clearInputs(inputs) {
   inputs.forEach((inp) => inp.value = '')
 }
 
-function addContact(inputs) {
+function createContactItemFromInputs(inputs) {
   const contactItem = {}
   inputs.map((inp) => contactItem[inp.dataset.content] = inp.value)
 
-  const firstChar = nameInputMain.value.charAt(0).toLowerCase()
+  return contactItem
+}
+
+function addContact(inputs) {
+  const contactItem = createContactItemFromInputs(inputs)
+
+  const firstChar = contactItem.name.charAt(0).toLowerCase()
 
   clearInputs(inputs)
 
@@ -194,7 +211,15 @@ function clearList() {
   renderEmptyList()
 }
 
-function handleContact(targetInputs) {
+function handleContact(targetInputs, submitEl) {
+  let handleStatus;
+  const contactItem = createContactItemFromInputs(targetInputs)
+
+  if (!isContactNew(contactItem)) { 
+    showElementsError(submitEl, 'You already have this contact');
+    return
+  }
+
   const validationErrors = [];
 
   targetInputs.forEach((inp) => {
@@ -203,7 +228,15 @@ function handleContact(targetInputs) {
     validationRes && validationErrors.push({ invalidInput: inp, errorMessage: validationRes})
   })
 
-  validationErrors.every((x) => x.errorMessage === null) ? addContact(targetInputs) : validationErrors.map((x) => showError(x))
+  if (validationErrors.every((x) => x.errorMessage === null)) {
+    addContact(targetInputs);
+    handleStatus = true;
+  } else {
+    validationErrors.map((x) => showInputsError(x))
+    handleStatus = false;
+  }
+
+  return handleStatus;
 }
 
 function decreaseTitleCounter(titleEl) {
@@ -212,21 +245,98 @@ function decreaseTitleCounter(titleEl) {
   titleEl.textContent = titleEl.textContent.replace(/\d/, counter - 1)
 }
 
+function disableScroll() {
+  document.body.classList.add('no-scroll');
+}
+
+function allowScroll() {
+  document.body.classList.remove('no-scroll');
+}
+
+function getContactListItems() {
+  const contactList = JSON.parse(localStorage.getItem('contacts')) || {};
+  return Object.values(contactList).flat()
+}
+
+function isContactNew(contactItem) {
+  return !getContactListItems().find((savedContact) => {
+    return savedContact.name === contactItem.name && 
+    savedContact.vacancy === contactItem.vacancy &&
+    savedContact.phone === contactItem.phone
+  })
+}
+
+function showEditModal(itemKey) {
+  editModal.parentElement.classList.remove('hidden')
+  disableScroll()
+
+  editModal.dataset.initialKey = itemKey;
+  const targetContactItem = decodeItemKey(itemKey);
+
+  editsInputGroup.forEach((inp) => inp.value = targetContactItem[inp.dataset.content])
+}
+
+function closeEditModal() {
+  editModal.parentElement.classList.add('hidden')
+  clearInputs(editsInputGroup)
+  editModal.dataset.initialKey = ''
+  allowScroll()
+}
+
+function showElementsError(element, errorMessage) {
+  const parentElement = element.parentElement;
+
+  const errorEl = document.createElement('span')
+  errorEl.classList.add('error-message')
+  errorEl.classList.add('button-message')
+  errorEl.textContent = errorMessage;
+
+  element.classList.add('shake');
+  parentElement.appendChild(errorEl)
+
+  setTimeout(() => {
+    element.classList.remove('shake');
+    errorEl.remove()
+  }, 600);
+}
+
+function handleContactFromEditModal(editBtn) {
+    const inputsArr = Array.from(editsInputGroup)
+    const contactItem = createContactItemFromInputs(inputsArr)
+    const initialKey = editModal.dataset.initialKey
+    const initialContact = decodeItemKey(initialKey)
+
+    if (JSON.stringify(contactItem) === JSON.stringify(initialContact)) {
+      closeEditModal()
+      return;
+    }
+
+    if (handleContact(inputsArr, editBtn)) {
+      const prevItemCondition = document.querySelector(`[data-key="${initialKey}"]`)
+      deleteItem(initialKey, prevItemCondition)
+      closeEditModal()
+    }
+}
+
 renderList()
 
-controlsWrapper.addEventListener('click', (e) => {
+document.body.addEventListener('click', (e) => {
   const target = e.target;
 
-  if(target.classList.contains('add-btn')) handleContact([ nameInputMain, vacancyInputMain, phoneNumInputMain ]);
+  if(target.classList.contains('add-btn')) handleContact([ nameInputMain, vacancyInputMain, phoneNumInputMain ], target);
   if(target.classList.contains('clear-btn')) clearList();
-})
-
-contactListEl.addEventListener('click', (e) => {
-  const target = e.target;
 
   if (target.classList.contains('delete-btn')) {
-    const itemCard = target.parentElement
+    deleteItem(target.parentElement.dataset.key, target.parentElement)
+  }
 
-    deleteItem(itemCard.dataset.key, itemCard)
+  if (target.classList.contains('edit-btn')) {
+    showEditModal(target.parentElement.dataset.key);
+  }
+  if (target.classList.contains('close-modal-btn') || target.classList.contains('editor-modal__wrapper')) {
+    closeEditModal()
+  }
+  if (target.classList.contains('save-btn')) {
+    handleContactFromEditModal(target)
   }
 })

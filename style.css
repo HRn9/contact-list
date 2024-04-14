@@ -7,8 +7,16 @@ body {
   font-size: 1em;
 }
 
+body.no-scroll {
+  overflow: hidden;
+}
+
 h1 {
   text-align: center;
+}
+
+h2 {
+  margin: 0;
 }
 
 input {
@@ -51,6 +59,11 @@ button:hover {
   gap: 10px;
   flex-wrap: wrap;
   justify-content: center;
+  position: relative;
+}
+
+.buttons__wrapper {
+  padding-bottom: 1em;
 }
 
 .input__wrapper {
@@ -117,13 +130,25 @@ button:hover {
   flex-wrap: wrap;
 }
 
-.delete-btn {
+.list-item > :first-child {
+  margin-right: 2.6em;
+}
+
+.delete-btn,
+.edit-btn {
   position: absolute;
-  right: 8px;
-  top: 4px;
   cursor: pointer;
   user-select: none;
-  background-color: #e7e7e7;
+  top: 4px;
+  font-size: 1.2em;
+}
+
+.delete-btn {
+  right: 0.5em;
+}
+
+.edit-btn {
+  right: 1.5em;
 }
 
 .block-title {
@@ -132,9 +157,7 @@ button:hover {
 }
 
 .hidden {
-  height: 0;
-  overflow: hidden;
-  padding: 0;
+  display: none !important;
 }
 
 @keyframes shake {
@@ -156,5 +179,51 @@ button:hover {
   text-wrap: balance;
   font-size: 0.8em;
   position: absolute;
-  bottom: -1.2em;
+  line-height: 2em;
+}
+
+.error-message.input-message {
+  bottom: -1.5em;
+}
+
+.error-message.button-message {
+  bottom: 0;
+}
+
+.base-modal__wrapper {
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.base-modal {
+  background-color: #fefefe;
+  border: 1px solid #454545;
+  padding: 1.4em;
+  display: flex;
+  flex-direction: column;
+  gap: 1.3em;
+  align-items: center;
+  position: relative;
+}
+
+.editor-modal .inputs-group__wrapper {
+  flex-direction: column;
+  gap: 1.1em;
+}
+
+.close-modal-btn {
+  position: absolute;
+  top: 0;
+  right: 0.2em;
+  font-size: 1.2em;
+  user-select: none;
+  cursor: pointer;
 }
