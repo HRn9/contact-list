@@ -13,7 +13,7 @@ export function renderList(): void {
     return
   }
 
-  Object.entries(list).sort().forEach((ent) => {
+  Object.entries(list).forEach((ent) => {
     const [key, value] = ent;
 
     const listBlock = document.createElement('div');

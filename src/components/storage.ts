@@ -10,7 +10,10 @@ export function initContactListStorage() {
 }
 
 export function setContactList(newContacts: ContactList) {
-  contacts = newContacts
+  const sortedContactsEnt = Object.entries(newContacts).sort();
+  const sortedContacts = Object.fromEntries(sortedContactsEnt)
+  
+  contacts = sortedContacts
   localStorage.setItem('contacts', JSON.stringify(newContacts))
 }
 
