@@ -1,8 +1,8 @@
 import { ContactItem } from "../../models/contact-item";
-import { getContactListItems } from "./get-contact-list-items";
+import { getContactList } from "../storage";
 
 export function isNewContact(contactItem: ContactItem): boolean {
-  const contacts = getContactListItems();
+  const contacts = getContactList()
   const flattedList = Object.values(contacts).flat()
   return flattedList.every((savedContact) => 
   savedContact.name !== contactItem.name && 

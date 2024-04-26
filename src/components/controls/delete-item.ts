@@ -2,11 +2,11 @@ import { contactListEl } from "../../consts/temp-consts";
 import { decodeItemKey } from "../../utils/decode-Item-key";
 import { isElementEmpty } from "../../utils/is-element-empty";
 import { renderEmptyList } from "../contact-list/render-empty-list";
+import { getContactList, setContactList } from "../storage";
 import { decreaseTitleCounter } from "./decrease-title-counter";
-import { getContactListItems } from "./get-contact-list-items";
 
 export function deleteItem(itemKey: string, itemElement: HTMLElement): void {
-  const contacts = getContactListItems()
+  const contacts = getContactList()
   const contactItem = decodeItemKey(itemKey)
   const firstChar = contactItem.name.charAt(0).toLowerCase()
   const contactList = contacts[firstChar];
@@ -19,7 +19,7 @@ export function deleteItem(itemKey: string, itemElement: HTMLElement): void {
 
   filteredList.length < 1 ? delete contacts[firstChar] : contacts[firstChar] = filteredList;
 
-  localStorage.setItem('contacts', JSON.stringify(contacts));
+  setContactList(contacts)
 
   if (itemElement) {
     const itemCardsList = itemElement.parentElement as HTMLElement

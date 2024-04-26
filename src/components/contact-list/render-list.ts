@@ -1,11 +1,11 @@
 import { contactListEl } from "../../consts/temp-consts";
-import { getContactListItems } from "../controls/get-contact-list-items";
+import { getContactList } from "../storage";
 import { renderContactCard } from "./render-contact-card";
 import { renderEmptyList } from "./render-empty-list";
 
 export function renderList(): void {
   contactListEl!.innerHTML = "";
-  const list = getContactListItems()
+  const list = getContactList()
 
   const isLsEmpty = !list || Object.keys(list).length === 0;
   if (isLsEmpty) {

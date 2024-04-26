@@ -1,7 +1,7 @@
 import { clearInputs } from "../../utils/clear-inputs";
 import { renderList } from "../contact-list/render-list";
+import { getContactList, setContactList } from "../storage";
 import { createContactItemFromInputs } from "./create-contact-item";
-import { getContactListItems } from "./get-contact-list-items";
 
 export function addContact(inputs: HTMLInputElement[]) {
   const contactItem = createContactItemFromInputs(inputs)
@@ -10,14 +10,14 @@ export function addContact(inputs: HTMLInputElement[]) {
 
   clearInputs(inputs)
 
-  let contacts = getContactListItems()
+  let contacts = getContactList()
 
   if (!contacts[firstChar]) {
     contacts[firstChar] = [];
   }
 
   contacts[firstChar].push(contactItem);
-  localStorage.setItem('contacts', JSON.stringify(contacts));
+  setContactList(contacts)
 
   renderList()
 }
