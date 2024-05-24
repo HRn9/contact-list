@@ -1,9 +1,5 @@
 import { createStore } from "redux";
-import { Contact } from "../types";
-
-type ContactsState = {
-  contacts: Contact[];
-};
+import { Contact, RootState } from "../types";
 
 type ContactsAction =
   | {
@@ -19,14 +15,14 @@ type ContactsAction =
       payload: { id: number; newData: Contact };
     };
 
-const initialState: ContactsState = {
+const initialState: RootState = {
   contacts: JSON.parse(localStorage.getItem("contacts") || "[]"),
 };
 
 function contactsReducer(
   state = initialState,
   action: ContactsAction
-): ContactsState {
+): RootState {
   switch (action.type) {
     case "ADD_CONTACT":
       const newContacts = [...state.contacts, action.payload];
@@ -52,6 +48,6 @@ function contactsReducer(
   }
 }
 
-const store = createStore(contactsReducer);
+const contactsStore = createStore(contactsReducer);
 
-export default store;
+export default contactsStore;

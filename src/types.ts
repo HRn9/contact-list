@@ -4,3 +4,7 @@ export type Contact = {
   vacancy: string;
   phone: string;
 };
+
+export type RootState = {
+  contacts: Contact[];
+}
