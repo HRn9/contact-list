@@ -8,3 +8,5 @@ export type Contact = {
 export type RootState = {
   contacts: Contact[];
 }
+
+export type MappedContacts = Record<string, Contact[]>

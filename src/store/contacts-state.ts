@@ -22,7 +22,7 @@ const initialState: RootState = {
 function contactsReducer(
   state = initialState,
   action: ContactsAction
-): RootState {
+) {
   switch (action.type) {
     case "ADD_CONTACT":
       const newContacts = [...state.contacts, action.payload];
