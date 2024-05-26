@@ -2,6 +2,7 @@ import { Grid, TextField, Button } from "@mui/material";
 import { useRef, useState } from "react";
 import * as Yup from "yup";
 import { StringSchema } from "yup";
+import useValidationSchema from "../hooks/useValidationSchema";
 
 export default function ContactForm() {
   const nameRef = useRef(null);
@@ -23,27 +24,16 @@ export default function ContactForm() {
         .matches(/^\d+$/, "Phone must contain only numbers"),
     });
 
+    const validationSchemaFields = validationSchema.fields as unknown as Record<string, StringSchema>;
+
     const nameValue = (nameRef.current as unknown as HTMLInputElement).value;
-
-    (validationSchema.fields.name as StringSchema<string>)
-      .validate(nameValue)
-      .then(() => setNameError(""))
-      .catch((error) => setNameError(error.message));
-
     const vacancyValue = (vacancyRef.current as unknown as HTMLInputElement)
       .value;
-
-    (validationSchema.fields.vacancy as StringSchema<string>)
-      .validate(vacancyValue)
-      .then(() => setVacancyError(""))
-      .catch((error) => setVacancyError(error.message));
-
     const phoneValue = (phoneRef.current as unknown as HTMLInputElement).value;
 
-    (validationSchema.fields.phone as StringSchema<string>)
-      .validate(phoneValue)
-      .then(() => setPhoneError(""))
-      .catch((error) => setPhoneError(error.message));
+    useValidationSchema(validationSchemaFields.name, nameValue, setNameError);
+    useValidationSchema(validationSchemaFields.vacancy, vacancyValue, setVacancyError);
+    useValidationSchema(validationSchemaFields.phone, phoneValue, setPhoneError);
   }
   return (
     <Grid container spacing={2} justifyContent="center" alignItems="center">
