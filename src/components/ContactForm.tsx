@@ -1,6 +1,9 @@
 import { Grid, TextField, Button } from "@mui/material";
 import { useState } from "react";
 import * as Yup from "yup";
+import { Contact } from "../types";
+import { v4 as uuidv4 } from 'uuid';
+import contactsStore from "../store/contacts-state";
 
 export default function ContactForm() {
   const validationSchema = Yup.object({
@@ -32,7 +35,7 @@ export default function ContactForm() {
     setErrors(errors);
   };
 
-  async function handleSubmit() {
+  async function handleAdding() {
     try {
       setErrors({});
 
@@ -40,6 +43,16 @@ export default function ContactForm() {
         { name, vacancy, phone },
         { abortEarly: false }
       );
+
+      const newContact: Contact = {
+        name, vacancy, phone,
+        id: uuidv4(),
+      }
+
+      contactsStore.dispatch({type: 'ADD_CONTACT', payload: newContact})
+      setName('')
+      setVacancy('')
+      setPhone('')
     } catch (err) {
       handleError(err as unknown as Yup.ValidationError);
     }
@@ -90,7 +103,7 @@ export default function ContactForm() {
         />
       </Grid>
       <Grid item xs={0}>
-        <Button variant="outlined" onClick={handleSubmit}>
+        <Button variant="outlined" onClick={handleAdding}>
           ADD
         </Button>
       </Grid>
