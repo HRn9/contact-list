@@ -7,7 +7,7 @@ type ContactsAction =
       payload: Contact;
     }
   | {
-      type: "REMOVE_CONTACT";
+      type: "DELETE_CONTACT";
       payload: string;
     }
   | {
@@ -28,7 +28,7 @@ function contactsReducer(state = initialState, action: ContactsAction) {
       const newContacts = [...state.contacts, action.payload];
       localStorage.setItem("contacts", JSON.stringify(newContacts));
       return { ...state, contacts: newContacts };
-    case "REMOVE_CONTACT":
+    case "DELETE_CONTACT":
       const updatedContacts = state.contacts.filter(
         (contact) => contact.id !== action.payload
       );
