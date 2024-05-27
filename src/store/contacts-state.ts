@@ -8,21 +8,21 @@ type ContactsAction =
     }
   | {
       type: "REMOVE_CONTACT";
-      payload: number;
+      payload: string;
     }
   | {
       type: "UPDATE_CONTACT";
-      payload: { id: number; newData: Contact };
+      payload: { id: string; newData: Contact };
+    }
+  | {
+      type: "CLEAR_STORE";
     };
 
 const initialState: RootState = {
   contacts: JSON.parse(localStorage.getItem("contacts") || "[]"),
 };
 
-function contactsReducer(
-  state = initialState,
-  action: ContactsAction
-) {
+function contactsReducer(state = initialState, action: ContactsAction) {
   switch (action.type) {
     case "ADD_CONTACT":
       const newContacts = [...state.contacts, action.payload];
@@ -43,6 +43,9 @@ function contactsReducer(
       });
       localStorage.setItem("contacts", JSON.stringify(updatedContactsList));
       return { ...state, contacts: updatedContactsList };
+    case "CLEAR_STORE":
+      localStorage.setItem("contacts", "[]");
+      return { ...state, contacts: [] };
     default:
       return state;
   }

@@ -58,6 +58,10 @@ export default function ContactForm() {
     }
   }
 
+  function handleClearing() {
+    contactsStore.dispatch({type: 'CLEAR_STORE'})
+  }
+
   return (
     <Grid
       container
@@ -108,7 +112,7 @@ export default function ContactForm() {
         </Button>
       </Grid>
       <Grid item xs={0}>
-        <Button variant="outlined">CLEAR LIST</Button>
+        <Button variant="outlined" onClick={handleClearing}>CLEAR LIST</Button>
       </Grid>
       <Grid item xs={0}>
         <Button variant="outlined">SEARCH</Button>
