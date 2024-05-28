@@ -12,7 +12,7 @@ type ContactsAction =
     }
   | {
       type: "UPDATE_CONTACT";
-      payload: { id: string; newData: Contact };
+      payload: Contact;
     }
   | {
       type: "CLEAR_STORE";
@@ -37,7 +37,7 @@ function contactsReducer(state = initialState, action: ContactsAction) {
     case "UPDATE_CONTACT":
       const updatedContactsList = state.contacts.map((contact) => {
         if (contact.id === action.payload.id) {
-          return { ...contact, ...action.payload.newData };
+          return { ...action.payload };
         }
         return contact;
       });

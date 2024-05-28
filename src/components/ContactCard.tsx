@@ -4,8 +4,12 @@ import { Contact } from "../types";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import contactsStore from "../store/contacts-state";
+import { useState } from "react";
+import EditContactModal from "./EditContactModal/EditContactModal";
 
 export default function ContactCard(contactData: Contact) {
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
   function handleDeletion() {
     contactsStore.dispatch({ type: "DELETE_CONTACT", payload: contactData.id });
   }
@@ -19,7 +23,7 @@ export default function ContactCard(contactData: Contact) {
             right: "1rem",
           }}
         >
-          <EditIcon style={{ cursor: "pointer" }} />
+          <EditIcon style={{ cursor: "pointer" }} onClick={() => setIsEditModalOpen(true)}/>
           <DeleteIcon style={{ cursor: "pointer" }} onClick={handleDeletion} />
         </div>
         <Typography variant="h5" component="div">
@@ -30,6 +34,7 @@ export default function ContactCard(contactData: Contact) {
         </Typography>
         <Typography variant="body2">{contactData.phone}</Typography>
       </CardContent>
+      <EditContactModal contact={contactData} isOpen={isEditModalOpen} setIsOpen={setIsEditModalOpen}/>
     </Card>
   );
 }

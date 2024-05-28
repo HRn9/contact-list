@@ -56,7 +56,7 @@ export default function ContactForm() {
           size="small"
           id="outlined-basic"
           label="Name"
-          helperText={errors.name}
+          helperText={<span className="main-formHelperText">{errors.name}</span>}
           variant="outlined"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -65,7 +65,7 @@ export default function ContactForm() {
       <Grid item xs={2}>
         <TextField
           error={!!errors.vacancy}
-          helperText={errors.vacancy}
+          helperText={<span className="main-formHelperText">{errors.vacancy}</span>}
           size="small"
           id="outlined-basic"
           label="Vacancy"
@@ -77,7 +77,7 @@ export default function ContactForm() {
       <Grid item xs={2}>
         <TextField
           error={!!errors.phone}
-          helperText={errors.phone}
+          helperText={<span className="main-formHelperText">{errors.phone}</span>}
           size="small"
           id="outlined-basic"
           label="Phone"
