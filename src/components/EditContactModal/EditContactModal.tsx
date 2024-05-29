@@ -5,7 +5,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import { validateFields } from "../../validationFields/validateFields";
 import { validationSchema } from "../../validationFields/schemes/contactFormSchema";
-import classes from "./EditContactModal.module.scss"
+import classes from "./EditContactModal.module.scss";
 import contactsStore from "../../store/contacts-state";
 
 export default function EditContactModal({
@@ -17,9 +17,10 @@ export default function EditContactModal({
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  console.log(contact)
   type Errors = Partial<Record<"name" | "vacancy" | "phone", string>>;
   const [errors, setErrors] = useState<Errors>({});
-  
+
   const [name, setName] = useState(contact.name);
   const [vacancy, setVacancy] = useState(contact.vacancy);
   const [phone, setPhone] = useState(contact.phone);
@@ -38,7 +39,7 @@ export default function EditContactModal({
     )) as Errors;
 
     setErrors(errors || {});
-    
+
     if (!errors) {
       const updatedContact: Contact = {
         name,
@@ -47,13 +48,15 @@ export default function EditContactModal({
         id: contact.id,
       };
 
-      contactsStore.dispatch({type: 'UPDATE_CONTACT', payload: updatedContact})
-      setName("");
-      setVacancy("");
-      setPhone("");
-      setIsOpen(false)
+      if (JSON.stringify(updatedContact) !== JSON.stringify(contact)) {
+        contactsStore.dispatch({
+          type: "UPDATE_CONTACT",
+          payload: updatedContact,
+        });
+      }
+      setIsOpen(false);
     }
-  }
+  };
 
   return (
     isOpen &&
@@ -62,7 +65,7 @@ export default function EditContactModal({
         <div className={classes.modalWrapper} onClick={onWrapperClick}>
           <div className={classes.modalContent}>
             <CloseIcon
-              className={classes.closeIcon}
+              className="close-icon"
               onClick={() => setIsOpen(false)}
             />
             <TextField
@@ -95,7 +98,11 @@ export default function EditContactModal({
               error={!!errors.phone}
               helperText={errors.phone}
             />
-            <Button variant="outlined" style={{ margin: "0 auto" }} onClick={onSaveClick}>
+            <Button
+              variant="outlined"
+              style={{ margin: "0 auto" }}
+              onClick={onSaveClick}
+            >
               SAVE
             </Button>
           </div>

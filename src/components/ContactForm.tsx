@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import contactsStore from "../store/contacts-state";
 import { validateFields } from "../validationFields/validateFields";
 import { validationSchema } from "../validationFields/schemes/contactFormSchema";
+import SearchContactModal from "./SearchContactModal/SearchContactModal";
 
 export default function ContactForm() {
   type Errors = Partial<Record<"name" | "vacancy" | "phone", string>>;
@@ -14,6 +15,8 @@ export default function ContactForm() {
   const [name, setName] = useState("");
   const [vacancy, setVacancy] = useState("");
   const [phone, setPhone] = useState("");
+
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
 
   async function handleAdding() {
     const errors = (await validateFields(
@@ -97,8 +100,9 @@ export default function ContactForm() {
         </Button>
       </Grid>
       <Grid item xs={0}>
-        <Button variant="outlined">SEARCH</Button>
+        <Button variant="outlined" onClick={() => setIsSearchModalOpen(true)}>SEARCH</Button>
       </Grid>
+      <SearchContactModal isOpen={isSearchModalOpen} setIsOpen={setIsSearchModalOpen}/>
     </Grid>
   );
 }
